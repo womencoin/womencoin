@@ -16,10 +16,10 @@
 #endif
 
 #ifdef USE_UPNP
-#include </womencoin/miniupnpc/miniwget.h>
-#include </womencoin/miniupnpc/miniupnpc.h>
-#include </womencoin/miniupnpc/upnpcommands.h>
-#include </womencoin/miniupnpc/upnperrors.h>
+#include <miniupnpc/miniwget.h>
+#include <miniupnpc/miniupnpc.h>
+#include <miniupnpc/upnpcommands.h>
+#include <miniupnpc/upnperrors.h>
 #endif
 
 using namespace std;
