@@ -1019,9 +1019,9 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
 {
     int64_t nSubsidy = nCoinAge * COIN_YEAR_REWARD * 33 / (365 * 33 + 8);
 
-    if (nBestHeight <= 598000){
+    if (nBestHeight <= 599000){
         nSubsidy = nSubsidy;
-    } else if (nBestHeight <= 600000){
+    } else if (nBestHeight <= 601000){
         nSubsidy = nSubsidy * 50; // MAX ROI
     } else if (nBestHeight <= 900000){
         nSubsidy = nSubsidy * 0.1;
