@@ -1000,7 +1000,7 @@ uint256 WantedByOrphan(const CBlock* pblockOrphan)
 // miner's coin base reward
 int64_t GetProofOfWorkReward(int64_t nFees)
 {
-    
+
             int64_t nSubsidy = 150 * COIN;
 
             if(nBestHeight == 0)
@@ -1017,12 +1017,40 @@ int64_t GetProofOfWorkReward(int64_t nFees)
 // miner's coin stake reward based on coin age spent (coin-days)
 int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
 {
-    int64_t nSubsidy = nCoinAge * COIN_YEAR_REWARD * 33 / (365 * 33 + 8);
-
-    if (fDebug && GetBoolArg("-printcreation"))
-        printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);
-
-    return nSubsidy + nFees;
+    if(nBestHeight <= 600000){ // 1,000%
+      int64_t nSubsidy = nCoinAge * COIN_YEAR_REWARD * 33 / (12053);
+      if (fDebug && GetBoolArg("-printcreation")){printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);}
+      return nSubsidy + nFees;
+    }
+    else if(nBestHeight <= 603000){ //50,000%
+        int64_t nSubsidy = 50 * (nCoinAge * COIN_YEAR_REWARD * 33 / (12053));
+        if (fDebug && GetBoolArg("-printcreation")){printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);}
+        return nSubsidy + nFees;
+      }
+      else if(nBestHeight <= 900000) { //    100%
+          int64_t nSubsidy = (nCoinAge * COIN_YEAR_REWARD * 33 / (12053))/10;
+          if (fDebug && GetBoolArg("-printcreation")){printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);}
+          return nSubsidy + nFees;
+        }
+        else if(nBestHeight <= 1200000){ //     50%
+            int64_t nSubsidy = (nCoinAge * COIN_YEAR_REWARD * 33 / (12053))/20;
+            if (fDebug && GetBoolArg("-printcreation")){printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);}
+            return nSubsidy + nFees;
+          }
+          else if(nBestHeight <= 12500000){ //    25%
+              int64_t nSubsidy = (nCoinAge * COIN_YEAR_REWARD * 33 / (12053))/40;
+              if (fDebug && GetBoolArg("-printcreation")){printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);}
+              return nSubsidy + nFees;
+            }
+            else if(nBestHeight <= 5000000){ //    12%
+                int64_t nSubsidy = (nCoinAge * COIN_YEAR_REWARD * 33 / (12053))/83.33;
+                if (fDebug && GetBoolArg("-printcreation")){printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);}
+                return nSubsidy + nFees;
+              }
+                 else         //         6%
+                      int64_t nSubsidy = (nCoinAge * COIN_YEAR_REWARD * 33 / (12053))/166.66;
+                      if (fDebug && GetBoolArg("-printcreation")){printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nCoinAge);}
+                      return nSubsidy + nFees;
 }
 
 static const int64_t nTargetTimespan = 16 * 60;  // 16 mins
@@ -1878,7 +1906,7 @@ bool CBlock::SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew)
 // ppcoin: total coin age spent in transaction, in the unit of coin-days.
 // Only those coins meeting minimum age requirement counts. As those
 // transactions not in main chain are not currently indexed so we
-// might not find out about their coin age. Older transactions are 
+// might not find out about their coin age. Older transactions are
 // guaranteed to be in main chain by sync-checkpoint. This rule is
 // introduced to help nodes establish a consistent view of the coin
 // age (trust score) of competing branches.
@@ -2553,7 +2581,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nTime    = 1498660212;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
         block.nNonce   = !fTestNet ? 16167 : 16167;
-        
+
         if (true  && (block.GetHash() != hashGenesisBlock)) {
 
                 // This will figure out a valid hash and Nonce if you're
@@ -2572,12 +2600,12 @@ bool LoadBlockIndex(bool fAllowNew)
 
         //// debug print
         block.print();
-        
+
         printf("block.GetHash() == %s\n", block.GetHash().ToString().c_str());
         printf("block.hashMerkleRoot == %s\n", block.hashMerkleRoot.ToString().c_str());
         printf("block.nTime = %u \n", block.nTime);
         printf("block.nNonce = %u \n", block.nNonce);
-                
+
         assert(block.hashMerkleRoot == uint256("0x1ed098080419e36b7d57c1bbb37100506c1b2a25e9028d6f422f1a16c99be2c3"));
         assert(block.GetHash() == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
         assert(block.CheckBlock());
@@ -3148,7 +3176,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
                     if (inv.hash == pfrom->hashContinue)
                     {
                         // ppcoin: send latest proof-of-work block to allow the
-                        // download node to accept as orphan (proof-of-stake 
+                        // download node to accept as orphan (proof-of-stake
                         // block might be rejected by stake connection check)
                         vector<CInv> vInv;
                         vInv.push_back(CInv(MSG_BLOCK, GetLastBlockIndex(pindexBest, false)->GetBlockHash()));
