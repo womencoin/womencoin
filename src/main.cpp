@@ -997,6 +997,13 @@ uint256 WantedByOrphan(const CBlock* pblockOrphan)
     return pblockOrphan->hashPrevBlock;
 }
 
+bool maxSupplyReached() {
+	if (!pindexBest)
+		return false;
+
+	return pindexBest->nMoneySupply >= MAX_MONEY;
+}
+
 // miner's coin base reward
 int64_t GetProofOfWorkReward(int64_t nFees)
 {
@@ -1015,13 +1022,6 @@ int64_t GetProofOfWorkReward(int64_t nFees)
 		printf("GetProofOfWorkReward() : create=%s nSubsidy=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
 
 	return nSubsidy + nFees;
-}
-
-bool maxSupplyReached() {
-	if (!pindexBest)
-		return false;
-
-	return pindexBest->nMoneySupply >= MAX_MONEY;
 }
 
 // miner's coin stake reward based on coin age spent (coin-days)
