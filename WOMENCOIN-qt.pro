@@ -27,12 +27,15 @@ UI_DIR = build
 
 # use: qmake "RELEASE=1"
 contains(RELEASE, 1) {
-    # Mac: compile for maximum compatibility (10.5, 32-bit)
-    macx:QMAKE_CXXFLAGS += -mmacosx-version-min=10.5 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.5.sdk
+    # Mac
+    macx:QMAKE_CXXFLAGS += -mmacosx-version-min=10.8 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk -stdlib=libc++
+    macx:QMAKE_CFLAGS += -mmacosx-version-min=10.8 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk -stdlib=libc++
+    macx:QMAKE_LFLAGS += -mmacosx-version-min=10.8 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk -stdlib=libc++
+    macx:QMAKE_OBJECTIVE_CFLAGS += -mmacosx-version-min=10.8 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk -stdlib=libc++
 
     !windows:!macx {
         # Linux: static link
-        LIBS += -Wl,-Bstatic
+        # LIBS += -Wl,-Bstatic
     }
 }
 
@@ -360,45 +363,60 @@ isEmpty(BOOST_LIB_SUFFIX) {
     windows:BOOST_LIB_SUFFIX = -mgw63-mt-s-1_55
 }
 
+# platform specific defaults, if not overridden on command line
+isEmpty(BOOST_LIB_SUFFIX) {
+    macx:BOOST_LIB_SUFFIX = -mt
+    windows:BOOST_LIB_SUFFIX = -mt
+}
+
 isEmpty(BOOST_THREAD_LIB_SUFFIX) {
     win32:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
     else:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
 }
 
 isEmpty(BDB_LIB_PATH) {
-    windows:BDB_LIB_PATH = C:\womencoin\db-4.8.30.NC\build_unix
+    macx:BDB_LIB_PATH = /opt/local/lib/db48
+    windows:BDB_LIB_PATH = C:\legends\db-4.8.30.NC\build_unix
 }
 
 isEmpty(BDB_LIB_SUFFIX) {
+    macx:BDB_LIB_SUFFIX = -4.8
     windows:BDB_LIB_SUFFIX = -4.8
 }
 
 isEmpty(BDB_INCLUDE_PATH) {
-    windows:BDB_INCLUDE_PATH = C:\womencoin\db-4.8.30.NC\build_unix
+    macx:BDB_INCLUDE_PATH = /opt/local/include/db48
+    windows:BDB_INCLUDE_PATH = C:\legends\db-4.8.30.NC\build_unix
 }
 
 isEmpty(OPENSSL_LIB_PATH) {
-    windows:OPENSSL_LIB_PATH = C:\womencoin\openssl-1.0.2o
+    macx:OPENSSL_LIB_PATH = /opt/local/lib
+    windows:OPENSSL_LIB_PATH = C:\legends\openssl-1.0.2o
 }
 
 isEmpty(OPENSSL_INCLUDE_PATH) {
-    windows:OPENSSL_INCLUDE_PATH = C:\womencoin\openssl-1.0.2o\include
+    macx:OPENSSL_INCLUDE_PATH = /opt/local/include/openssl
+    windows:OPENSSL_INCLUDE_PATH = C:\legends\openssl-1.0.2o\include
 }
 
 isEmpty(BOOST_LIB_PATH) {
-    windows:BOOST_LIB_PATH = C:\womencoin\boost_1_55_0\boost_1_55_0\stage\lib
+    macx:BOOST_LIB_PATH = /opt/local/lib
+    windows:BOOST_LIB_PATH = C:\legends\boost_1_55_0\boost_1_55_0\stage\lib
 }
 
 isEmpty(BOOST_INCLUDE_PATH) {
-    windows:BOOST_INCLUDE_PATH = C:\womencoin\boost_1_55_0\boost_1_55_0
+    macx:BOOST_INCLUDE_PATH = /opt/local/include
+    windows:BOOST_INCLUDE_PATH = C:\legends\boost_1_55_0\boost_1_55_0
 }
 
 isEmpty(MINIUPNPC_LIB_PATH) {
-    windows:MINIUPNPC_LIB_PATH = C:\womencoin\miniupnpc
+    macx:MINIUPNPC_LIB_PATH=/opt/local/lib
+    windows:MINIUPNPC_LIB_PATH = C:\legends\miniupnpc
 }
 
 isEmpty(MINIUPNPC_INCLUDE_PATH) {
-    windows:MINIUPNPC_INCLUDE_PATH = C:\womencoin\miniupnpc
+    macx:MINIUPNPC_INCLUDE_PATH=/opt/local/include/miniupnpc
+    windows:MINIUPNPC_INCLUDE_PATH = C:\legends\miniupnpc
 }
 
 windows:DEFINES += WIN32
@@ -415,12 +433,12 @@ windows:!contains(MINGW_THREAD_BUGFIX, 0) {
     QMAKE_LIBS_QT_ENTRY = -lmingwthrd $$QMAKE_LIBS_QT_ENTRY
 }
 
-macx:HEADERS += src/qt/macdockiconhandler.h
-macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
+macx:HEADERS += src/qt/macdockiconhandler.h src/qt/macnotificationhandler.h
+macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm src/qt/macnotificationhandler.mm
 macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
 macx:ICON = src/qt/res/icons/bitcoin.icns
-macx:TARGET = "WOMENCOIN-Qt"
+macx:TARGET = "WOMENCOIN"
 macx:QMAKE_CFLAGS_THREAD += -pthread
 macx:QMAKE_LFLAGS_THREAD += -pthread
 macx:QMAKE_CXXFLAGS_THREAD += -pthread
