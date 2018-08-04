@@ -38,7 +38,7 @@ Value getmininginfo(const Array& params, bool fHelp)
     uint64_t nStakeInterest = 1000 * CENT;
     if (nBestHeight < 615000){
         nStakeInterest = 1000 * CENT;   // 1000%
-    } else if (nBestHeight < 715000){
+    } else if (nBestHeight < 750000){
         nStakeInterest = 100 * CENT;    // 100%
     } else if (nBestHeight < 900000){
         nStakeInterest = 50 * CENT;     // 50%
