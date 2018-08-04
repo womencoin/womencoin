@@ -36,17 +36,15 @@ Value getmininginfo(const Array& params, bool fHelp)
     //stake innterest
 
     uint64_t nStakeInterest = 1000 * CENT;
-    if (nBestHeight <= 605000){
+    if (nBestHeight < 615000){
         nStakeInterest = 1000 * CENT;   // 1000%
-    } else if (nBestHeight <= 610000){
-        nStakeInterest = 50000 * CENT;  // 50000%
-    } else if (nBestHeight <= 900000){
+    } else if (nBestHeight < 715000){
         nStakeInterest = 100 * CENT;    // 100%
-    } else if (nBestHeight <= 1200000){
+    } else if (nBestHeight < 900000){
         nStakeInterest = 50 * CENT;     // 50%
-    } else if (nBestHeight <= 2500000){
+    } else if (nBestHeight < 1050000){
         nStakeInterest = 25 * CENT;     // 25%
-    } else if (nBestHeight <= 5000000){
+    } else if (nBestHeight < 1200000){
         nStakeInterest = 12 * CENT;     // 12%
     } else {
         nStakeInterest = 6 * CENT;      // 6%
@@ -546,4 +544,3 @@ Value submitblock(const Array& params, bool fHelp)
 
     return Value::null;
 }
-

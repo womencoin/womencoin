@@ -1034,17 +1034,15 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
 
     int64_t nSubsidy = nCoinAge * COIN_YEAR_REWARD * 33 / (365 * 33 + 8);
 
-    if (nBestHeight <= 605000){
+    if (nBestHeight < 615000){
         nSubsidy = nSubsidy;
-    } else if (nBestHeight <= 610000){
-        nSubsidy = nSubsidy * 50; // MAX ROI
-    } else if (nBestHeight <= 900000){
+    } else if (nBestHeight < 715000){
         nSubsidy = nSubsidy * 0.1;
-    } else if (nBestHeight <= 1200000){
+    } else if (nBestHeight < 900000){
         nSubsidy = nSubsidy * 0.05;
-    } else if (nBestHeight <= 2500000){
+    } else if (nBestHeight < 1050000){
         nSubsidy = nSubsidy * 0.025;
-    } else if (nBestHeight <= 5000000){
+    } else if (nBestHeight < 1200000){
         nSubsidy = nSubsidy * 0.012;
     } else {
         nSubsidy = nSubsidy * 0.006;
@@ -1909,7 +1907,7 @@ bool CBlock::SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew)
 // ppcoin: total coin age spent in transaction, in the unit of coin-days.
 // Only those coins meeting minimum age requirement counts. As those
 // transactions not in main chain are not currently indexed so we
-// might not find out about their coin age. Older transactions are 
+// might not find out about their coin age. Older transactions are
 // guaranteed to be in main chain by sync-checkpoint. This rule is
 // introduced to help nodes establish a consistent view of the coin
 // age (trust score) of competing branches.
@@ -2584,7 +2582,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nTime    = 1498660212;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
         block.nNonce   = !fTestNet ? 16167 : 16167;
-        
+
         if (true  && (block.GetHash() != hashGenesisBlock)) {
 
                 // This will figure out a valid hash and Nonce if you're
@@ -2603,12 +2601,12 @@ bool LoadBlockIndex(bool fAllowNew)
 
         //// debug print
         block.print();
-        
+
         printf("block.GetHash() == %s\n", block.GetHash().ToString().c_str());
         printf("block.hashMerkleRoot == %s\n", block.hashMerkleRoot.ToString().c_str());
         printf("block.nTime = %u \n", block.nTime);
         printf("block.nNonce = %u \n", block.nNonce);
-                
+
         assert(block.hashMerkleRoot == uint256("0x1ed098080419e36b7d57c1bbb37100506c1b2a25e9028d6f422f1a16c99be2c3"));
         assert(block.GetHash() == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
         assert(block.CheckBlock());
@@ -3179,7 +3177,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
                     if (inv.hash == pfrom->hashContinue)
                     {
                         // ppcoin: send latest proof-of-work block to allow the
-                        // download node to accept as orphan (proof-of-stake 
+                        // download node to accept as orphan (proof-of-stake
                         // block might be rejected by stake connection check)
                         vector<CInv> vInv;
                         vInv.push_back(CInv(MSG_BLOCK, GetLastBlockIndex(pindexBest, false)->GetBlockHash()));
