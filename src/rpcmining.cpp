@@ -13,6 +13,18 @@
 using namespace json_spirit;
 using namespace std;
 
+Value getstakingreward(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 2)
+        throw runtime_error(
+            "getstakingreward <blockheight> <coinage>\n");
+
+    int64_t nHeight = params[0].get_int64();
+    int64_t nCoinAge = params[1].get_int64();
+
+    return (uint64_t)GetProofOfStakeReward(nHeight, nCoinAge, 0);
+}
+
 Value getsubsidy(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
@@ -32,25 +44,6 @@ Value getmininginfo(const Array& params, bool fHelp)
 
     uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
-
-    //stake innterest
-
-    uint64_t nStakeInterest = 1000 * CENT;
-    if (nBestHeight < 615000){
-        nStakeInterest = 1000 * CENT;   // 1000%
-    } else if (nBestHeight < 750000){
-        nStakeInterest = 100 * CENT;    // 100%
-    } else if (nBestHeight < 900000){
-        nStakeInterest = 50 * CENT;     // 50%
-    } else if (nBestHeight < 1050000){
-        nStakeInterest = 25 * CENT;     // 25%
-    } else if (nBestHeight < 1200000){
-        nStakeInterest = 12 * CENT;     // 12%
-    } else {
-        nStakeInterest = 6 * CENT;      // 6%
-    }
-
-
 
     Object obj, diff, weight;
     obj.push_back(Pair("blocks",        (int)nBestHeight));
@@ -73,7 +66,6 @@ Value getmininginfo(const Array& params, bool fHelp)
     weight.push_back(Pair("combined",  (uint64_t)nWeight));
     obj.push_back(Pair("stakeweight", weight));
 
-    obj.push_back(Pair("stakeinterest",    (uint64_t)nStakeInterest));
     obj.push_back(Pair("testnet",       fTestNet));
     return obj;
 }
