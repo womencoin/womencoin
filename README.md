@@ -15,3 +15,4 @@ block 900000 - 1049999 = 25%
 block 1050000 - 1199999 = 12%
 block 1200000 - forever = 6%
 ```
+### Max Supply raised to 90 Billion
