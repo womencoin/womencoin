@@ -1032,31 +1032,27 @@ int64_t GetProofOfStakeReward(int nHeight, int64_t nCoinAge, int64_t nFees)
       return nFees;
     }
 
-    int64_t nSubsidy = nCoinAge * COIN_YEAR_REWARD * 33 / (365 * 33 + 8);
+    int actualCoinYearReward = COIN_YEAR_REWARD;
 
     if (nHeight > FORK_APR_FORK_1_BLOCK)
 	{
-		if (nHeight <= 799999)
+		if (nHeight <= 749999)
 		{
-			nSubsidy = nSubsidy * 0.1;
+			actualCoinYearReward = 100 * CENT;
 		}
-		else if (nHeight <= 899999)
+		else if (nHeight <= 849999)
 		{
-			nSubsidy = nSubsidy * 0.05;
+			actualCoinYearReward = 36 * CENT;
 		}
-		else if (nHeight <= 1049999)
+		else if (nHeight <= 999999 )
 		{
-			nSubsidy = nSubsidy * 0.025;
-		}
-		else if (nHeight <= 1199999)
-		{
-			nSubsidy = nSubsidy * 0.012;
-		}
-		else
-		{
-			nSubsidy = nSubsidy * 0.006;
+			actualCoinYearReward = 12 * CENT;
+		} else {
+			actualCoinYearReward = 6 * CENT;
 		}
 	}
+
+    int64_t nSubsidy = nCoinAge * actualCoinYearReward * 33 / (365 * 33 + 8);
 
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRId64" nHeight=%d\n", FormatMoney(nSubsidy).c_str(), nCoinAge, nHeight);
