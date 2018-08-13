@@ -13,6 +13,18 @@
 using namespace json_spirit;
 using namespace std;
 
+Value getstakingreward(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 2)
+        throw runtime_error(
+            "getstakingreward <blockheight> <coinage>\n");
+
+    int64_t nHeight = params[0].get_int64();
+    int64_t nCoinAge = params[1].get_int64();
+
+    return (uint64_t)GetProofOfStakeReward(nHeight, nCoinAge, 0);
+}
+
 Value getsubsidy(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
@@ -54,7 +66,6 @@ Value getmininginfo(const Array& params, bool fHelp)
     weight.push_back(Pair("combined",  (uint64_t)nWeight));
     obj.push_back(Pair("stakeweight", weight));
 
-    obj.push_back(Pair("stakeinterest",    (uint64_t)COIN_YEAR_REWARD));
     obj.push_back(Pair("testnet",       fTestNet));
     return obj;
 }
@@ -525,4 +536,3 @@ Value submitblock(const Array& params, bool fHelp)
 
     return Value::null;
 }
-
